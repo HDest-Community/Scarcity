@@ -1,2 +1,3 @@
 server float scarcity_percentage_min = 0.2;
 server float scarcity_percentage_max = 0.6;
+server int scarcity_toggles = 2147483647;

@@ -1,0 +1,18 @@
+AddOptionMenu "OptionsMenu"
+{
+	Submenu "Scarcity", "ScarcityMenu"
+}
+
+OptionMenu "ScarcityMenu"
+{
+	Title "Scarcity Options"
+
+	Slider "Min Percentage", "scarcity_percentage_min", -5, 1, 0.05, 2
+	Slider "Max Percentage", "scarcity_percentage_max", 0, 5, 0.05, 2
+	StaticText ""
+	FlagOption "Loose Ammo", "scarcity_toggles", "OnOff", 0
+	FlagOption "Bulk Boxes (9mm, etc.)", "scarcity_toggles", "OnOff", 1
+	FlagOption "Mags", "scarcity_toggles", "OnOff", 2
+	FlagOption "Ammo Boxes", "scarcity_toggles", "OnOff", 3
+	FlagOption "Supplies", "scarcity_toggles", "OnOff", 4
+}

@@ -2,6 +2,15 @@ version "4.7"
 
 class ScarcityHandler : EventHandler
 {
+	enum ScarcityToggleFlags
+	{
+		STF_Ammo = 1,
+		STF_AmmoBulk = 2,
+		STF_Mags = 4,
+		STF_AmmoBoxes = 8,
+		STF_Supplies = 16
+	}
+
 	override void WorldThingSpawned(WorldEvent e)
 	{
 		if (level.time > 3)
@@ -10,10 +19,11 @@ class ScarcityHandler : EventHandler
 		}
 
 		double perc = clamp(frandom(scarcity_percentage_min, scarcity_percentage_max), 0, 1.0);
+		int toggles = scarcity_toggles;
 
-		if (e.Thing is 'PortableMedikit' || e.Thing is 'HDInjectorMaker')
+		if (toggles & STF_Supplies && (e.Thing is 'PortableMedikit' || e.Thing is 'HDInjectorMaker') || toggles & STF_AmmoBoxes && e.Thing is 'HDAmBox')
 		{
-			if (frandom(0.05, 1.0) <= 1.0 - perc)
+			if (frandom(0.01, 1.0) <= 1.0 - perc)
 			{
 				e.Thing.Destroy();
 				return;
@@ -23,34 +33,41 @@ class ScarcityHandler : EventHandler
 		let am = HDAmmo(e.Thing);
 		if (am)
 		{
-			if (perc == 0)
-			{
-				am.Destroy();
-				return;
-			}
-
 			let mag = HDMagAmmo(am);
-			if (mag && mag.Mags.Size() > 0)
+			if (toggles & STF_Mags && mag && mag.Mags.Size() > 0)
 			{
+				if (perc == 0)
+				{
+					mag.Destroy();
+					return;
+				}
 				mag.Mags[0] = int(mag.Mags[0] * perc);
 			}
-			else
+			else if (toggles & STF_Ammo)
 			{
+				if (perc == 0)
+				{
+					am.Destroy();
+					return;
+				}
 				am.Amount = int(am.Amount * perc);
 			}
 			return;
 		}
 		
-		let upkp = HDUPK(e.Thing);
-		if (upkp && upkp.pickuptype is 'HDAmmo')
+		if (toggles & STF_AmmoBulk)
 		{
-			if (perc == 0)
+			let upkp = HDUPK(e.Thing);
+			if (upkp && upkp.pickuptype is 'HDAmmo')
 			{
-				upkp.Destroy();
+				if (perc == 0)
+				{
+					upkp.Destroy();
+					return;
+				}
+				upkp.amount = int(upkp.amount * perc);
 				return;
 			}
-			upkp.amount = int(upkp.amount * perc);
-			return;
 		}
 	}
 }
