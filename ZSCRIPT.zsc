@@ -1,0 +1,56 @@
+version "4.7"
+
+class ScarcityHandler : EventHandler
+{
+	override void WorldThingSpawned(WorldEvent e)
+	{
+		if (level.time > 3)
+		{
+			return;
+		}
+
+		double perc = clamp(frandom(scarcity_percentage_min, scarcity_percentage_max), 0, 1.0);
+
+		if (e.Thing is 'PortableMedikit' || e.Thing is 'HDInjectorMaker')
+		{
+			if (frandom(0.05, 1.0) <= 1.0 - perc)
+			{
+				e.Thing.Destroy();
+				return;
+			}
+		}
+
+		let am = HDAmmo(e.Thing);
+		if (am)
+		{
+			if (perc == 0)
+			{
+				am.Destroy();
+				return;
+			}
+
+			let mag = HDMagAmmo(am);
+			if (mag && mag.Mags.Size() > 0)
+			{
+				mag.Mags[0] = int(mag.Mags[0] * perc);
+			}
+			else
+			{
+				am.Amount = int(am.Amount * perc);
+			}
+			return;
+		}
+		
+		let upkp = HDUPK(e.Thing);
+		if (upkp && upkp.pickuptype is 'HDAmmo')
+		{
+			if (perc == 0)
+			{
+				upkp.Destroy();
+				return;
+			}
+			upkp.amount = int(upkp.amount * perc);
+			return;
+		}
+	}
+}
