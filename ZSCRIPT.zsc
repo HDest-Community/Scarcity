@@ -13,7 +13,7 @@ class ScarcityHandler : EventHandler
 
 	override void WorldThingSpawned(WorldEvent e)
 	{
-		if (level.time > 3)
+		if (level.time > 3 || level.MapName ~== "LOTSAGUN")
 		{
 			return;
 		}
