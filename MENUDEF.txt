@@ -15,4 +15,5 @@ OptionMenu "ScarcityMenu"
 	FlagOption "Mags", "scarcity_toggles", "OnOff", 2
 	FlagOption "Ammo Boxes", "scarcity_toggles", "OnOff", 3
 	FlagOption "Supplies", "scarcity_toggles", "OnOff", 4
+	FlagOption "Armors", "scarcity_toggles", "OnOff", 5
 }

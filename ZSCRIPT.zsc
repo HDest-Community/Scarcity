@@ -8,7 +8,8 @@ class ScarcityHandler : EventHandler
 		STF_AmmoBulk = 2,
 		STF_Mags = 4,
 		STF_AmmoBoxes = 8,
-		STF_Supplies = 16
+		STF_Supplies = 16,
+		STF_Armors = 32
 	}
 
 	override void WorldThingSpawned(WorldEvent e)
@@ -34,14 +35,18 @@ class ScarcityHandler : EventHandler
 		if (am)
 		{
 			let mag = HDMagAmmo(am);
-			if (toggles & STF_Mags && mag && mag.Mags.Size() > 0)
+			if (mag && mag.Mags.Size() > 0)
 			{
-				if (perc == 0)
+				bool arm = mag is 'HDArmour';
+				if (arm && toggles & STF_Armors || !arm && toggles & STF_Mags)
 				{
-					mag.Destroy();
-					return;
+					if (perc == 0)
+					{
+						mag.Destroy();
+						return;
+					}
+					mag.Mags[0] = int(mag.Mags[0] * perc);
 				}
-				mag.Mags[0] = int(mag.Mags[0] * perc);
 			}
 			else if (toggles & STF_Ammo)
 			{
