@@ -9,12 +9,13 @@ class ScarcityHandler : EventHandler
 		STF_Mags = 4,
 		STF_AmmoBoxes = 8,
 		STF_Supplies = 16,
-		STF_Armors = 32
+		STF_Armors = 32,
+		STF_EnemyDrops = 64
 	}
 
 	override void WorldThingSpawned(WorldEvent e)
 	{
-		if (level.time > 3 || level.MapName ~== "LOTSAGUN")
+		if (level.MapName ~== "LOTSAGUN")
 		{
 			return;
 		}
@@ -22,9 +23,23 @@ class ScarcityHandler : EventHandler
 		double perc = clamp(frandom(scarcity_percentage_min, scarcity_percentage_max), 0, 1.0);
 		int toggles = scarcity_toggles;
 
+		if (e.Thing is 'HDMobBase' && toggles & STF_EnemyDrops)
+		{
+			if (perc == 0 || frandom(0.01, 1.0) <= 1.0 - perc)
+			{
+				HDMobBase(e.Thing).bHASDROPPED = true;
+				return;
+			}
+		}
+
+		if (level.time > 3)
+		{
+			return;
+		}
+
 		if (toggles & STF_Supplies && (e.Thing is 'PortableMedikit' || e.Thing is 'HDInjectorMaker') || toggles & STF_AmmoBoxes && e.Thing is 'HDAmBox')
 		{
-			if (frandom(0.01, 1.0) <= 1.0 - perc)
+			if (perc == 0 || frandom(0.01, 1.0) <= 1.0 - perc)
 			{
 				e.Thing.Destroy();
 				return;
