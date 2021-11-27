@@ -63,7 +63,7 @@ class ScarcityHandler : EventHandler
 					if (arm && mag.Mags[0] > 1000)
 					{
 						int realAmt = mag.Mags[0] - 1000;
-						mag.Mags[0] -= realAmt * perc;
+						mag.Mags[0] -= int(realAmt * perc);
 						return;
 					}
 					mag.Mags[0] = int(mag.Mags[0] * perc);
