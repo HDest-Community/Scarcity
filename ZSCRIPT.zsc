@@ -42,8 +42,8 @@ class ScarcityHandler : EventHandler
 			if (perc == 0 || frandom(0.01, 1.0) <= 1.0 - perc)
 			{
 				e.Thing.Destroy();
-				return;
 			}
+			return;
 		}
 
 		let am = HDAmmo(e.Thing);
@@ -58,6 +58,12 @@ class ScarcityHandler : EventHandler
 					if (perc == 0)
 					{
 						mag.Destroy();
+						return;
+					}
+					if (arm && mag.Mags[0] > 1000)
+					{
+						int realAmt = mag.Mags[0] - 1000;
+						mag.Mags[0] -= realAmt * perc;
 						return;
 					}
 					mag.Mags[0] = int(mag.Mags[0] * perc);
