@@ -55,28 +55,30 @@ class ScarcityHandler : EventHandler
 				bool arm = mag is 'HDArmour';
 				if (arm && toggles & STF_Armors || !arm && toggles & STF_Mags)
 				{
-					if (perc == 0)
+					if (arm && mag.Mags[0] > 1000)
+					{
+						int realAmt = mag.Mags[0] - 1000;
+						mag.Mags[0] = 1000 + int(realAmt * perc);
+					}
+					else
+					{
+						mag.Mags[0] = int(mag.Mags[0] * perc);
+					}
+
+					if (mag.Mags[0] == 0 || arm && mag.Mags[0] == 1000)
 					{
 						mag.Destroy();
 						return;
 					}
-					if (arm && mag.Mags[0] > 1000)
-					{
-						int realAmt = mag.Mags[0] - 1000;
-						mag.Mags[0] -= int(realAmt * perc);
-						return;
-					}
-					mag.Mags[0] = int(mag.Mags[0] * perc);
 				}
 			}
 			else if (toggles & STF_Ammo)
 			{
-				if (perc == 0)
+				am.Amount = int(am.Amount * perc);
+				if (am.Amount == 0)
 				{
 					am.Destroy();
-					return;
 				}
-				am.Amount = int(am.Amount * perc);
 			}
 			return;
 		}
@@ -86,12 +88,12 @@ class ScarcityHandler : EventHandler
 			let upkp = HDUPK(e.Thing);
 			if (upkp && upkp.pickuptype is 'HDAmmo')
 			{
-				if (perc == 0)
+				upkp.amount = int(upkp.amount * perc);
+				if (upkp.amount == 0)
 				{
 					upkp.Destroy();
 					return;
 				}
-				upkp.amount = int(upkp.amount * perc);
 				return;
 			}
 		}
