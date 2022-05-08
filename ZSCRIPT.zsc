@@ -65,7 +65,7 @@ class ScarcityHandler : EventHandler
 						mag.Mags[0] = int(mag.Mags[0] * perc);
 					}
 
-					if (mag.Mags[0] == 0 || arm && mag.Mags[0] == 1000)
+					if (arm && mag.Mags[0] % 1000 == 0)
 					{
 						mag.Destroy();
 						return;
