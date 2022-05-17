@@ -25,7 +25,7 @@ class ScarcityHandler : EventHandler
 
 		if (e.Thing is 'HDMobBase' && toggles & STF_EnemyDrops)
 		{
-			if (perc == 0 || frandom(0.01, 1.0) <= 1.0 - perc)
+			if (perc == 0 || ShouldRemove(perc))
 			{
 				HDMobBase(e.Thing).bHASDROPPED = true;
 				return;
@@ -39,7 +39,7 @@ class ScarcityHandler : EventHandler
 
 		if (toggles & STF_Supplies && (e.Thing is 'PortableMedikit' || e.Thing is 'HDInjectorMaker') || toggles & STF_AmmoBoxes && e.Thing is 'HDAmBox')
 		{
-			if (perc == 0 || frandom(0.01, 1.0) <= 1.0 - perc)
+			if (perc == 0 || ShouldRemove(perc))
 			{
 				e.Thing.Destroy();
 			}
@@ -74,10 +74,23 @@ class ScarcityHandler : EventHandler
 			}
 			else if (toggles & STF_Ammo)
 			{
-				am.Amount = int(am.Amount * perc);
-				if (am.Amount == 0)
+				// [Ace] For singular items, make it a chance to remove the item, otherwise anything that's isn't 1.0 will remove it as it will get trunctated to 0.
+				if (am.Amount == 1)
 				{
-					am.Destroy();
+					if (ShouldRemove(perc))
+					{
+						am.Destroy();
+						return;
+					}
+				}
+				else
+				{
+					am.Amount = int(am.Amount * perc);
+					if (am.Amount == 0)
+					{
+						am.Destroy();
+						return;
+					}
 				}
 			}
 			return;
@@ -97,5 +110,10 @@ class ScarcityHandler : EventHandler
 				return;
 			}
 		}
+	}
+
+	private bool ShouldRemove(double perc)
+	{
+		return frandom(0.01, 1.0) <= 1.0 - perc;
 	}
 }
