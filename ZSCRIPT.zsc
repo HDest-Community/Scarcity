@@ -101,11 +101,22 @@ class ScarcityHandler : EventHandler
 			let upkp = HDUPK(e.Thing);
 			if (upkp && upkp.pickuptype is 'HDAmmo')
 			{
-				upkp.amount = int(upkp.amount * perc);
-				if (upkp.amount == 0)
+				if (upkp.Amount == 1)
 				{
-					upkp.Destroy();
-					return;
+					if (ShouldRemove(perc))
+					{
+						upkp.Destroy();
+						return;
+					}
+				}
+				else
+				{
+					upkp.Amount = int(upkp.Amount * perc);
+					if (upkp.Amount == 0)
+					{
+						upkp.Destroy();
+						return;
+					}
 				}
 				return;
 			}
