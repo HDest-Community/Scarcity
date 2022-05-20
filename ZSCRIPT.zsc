@@ -25,7 +25,7 @@ class ScarcityHandler : EventHandler
 
 		if (e.Thing is 'HDMobBase' && toggles & STF_EnemyDrops)
 		{
-			if (perc == 0 || ShouldRemove(perc))
+			if (ShouldRemove(perc))
 			{
 				HDMobBase(e.Thing).bHASDROPPED = true;
 				return;
@@ -39,7 +39,7 @@ class ScarcityHandler : EventHandler
 
 		if (toggles & STF_Supplies && (e.Thing is 'PortableMedikit' || e.Thing is 'HDInjectorMaker') || toggles & STF_AmmoBoxes && e.Thing is 'HDAmBox')
 		{
-			if (perc == 0 || ShouldRemove(perc))
+			if (ShouldRemove(perc))
 			{
 				e.Thing.Destroy();
 			}
@@ -125,6 +125,6 @@ class ScarcityHandler : EventHandler
 
 	private bool ShouldRemove(double perc)
 	{
-		return frandom(0.01, 1.0) <= 1.0 - perc;
+		return perc == 0 || frandom(0.01, 1.0) <= 1.0 - perc;
 	}
 }
