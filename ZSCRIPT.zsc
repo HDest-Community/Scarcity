@@ -32,7 +32,7 @@ class ScarcityHandler : EventHandler
 			}
 		}
 
-		if (level.time > 3)
+		if (level.time > 3 || !Inventory(e.Thing) || Inventory(e.Thing).owner)
 		{
 			return;
 		}
